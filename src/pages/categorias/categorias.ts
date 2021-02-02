@@ -33,7 +33,7 @@ export class CategoriasPage {
         this.itens = response
       },
       error => {
-        console.log(error)
+       // console.log(error)
       })
 
   }
