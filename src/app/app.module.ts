@@ -14,6 +14,16 @@ import { ErrorInterceptorProvider } from '../interceptors/error-interceptor';
 import { AuthService } from '../services/auth.service';
 import { StorageService } from './../services/storage.service';
 
+import { JwtModule } from '@auth0/angular-jwt';
+
+//export function authHttpServiceFactory (http: Http, options: RequestOptions) {
+  //return new AuthHttp(new AuthConfig(), http, options);
+//}
+
+export function tokenGetter() {
+  return localStorage.getItem('token');
+}
+
 @NgModule({
   declarations: [
     MyApp
@@ -21,20 +31,32 @@ import { StorageService } from './../services/storage.service';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    HttpClientModule
+    HttpClientModule,   
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter
+        //whitelistedDomains: API_CONFIG.tokenWhitelistedDomains,
+        //blacklistedDomains: API_CONFIG.tokenBlacklistedDomains
+      }
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp
   ],
   providers: [
+    //{
+      //provide: AuthHttp,
+      //useFactory: authHttpServiceFactory,
+      //deps: [Http, RequestOptions]
+    //},
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CategoriaService,
     ErrorInterceptorProvider,
     AuthService,
-    StorageService
+    StorageService    
   ]
 })
 export class AppModule {}
