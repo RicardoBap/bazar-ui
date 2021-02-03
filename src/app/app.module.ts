@@ -20,9 +20,9 @@ import { JwtModule } from '@auth0/angular-jwt';
   //return new AuthHttp(new AuthConfig(), http, options);
 //}
 
-export function tokenGetter() {
-  return localStorage.getItem('token');
-}
+//export function tokenGetter() {
+  //return localStorage.getItem('token');
+//}
 
 @NgModule({
   declarations: [
@@ -31,14 +31,14 @@ export function tokenGetter() {
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    HttpClientModule,   
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter
+    HttpClientModule
+    //JwtModule.forRoot({
+      //config: {
+        //tokenGetter: tokenGetter
         //whitelistedDomains: API_CONFIG.tokenWhitelistedDomains,
         //blacklistedDomains: API_CONFIG.tokenBlacklistedDomains
-      }
-    })
+      //}
+    //})
   ],
   bootstrap: [IonicApp],
   entryComponents: [
