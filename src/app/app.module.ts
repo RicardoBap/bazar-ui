@@ -14,6 +14,7 @@ import { ErrorInterceptorProvider } from '../interceptors/error-interceptor';
 import { AuthService } from '../services/auth.service';
 import { StorageService } from './../services/storage.service';
 import { ClienteService } from './../services/domain/cliente.service';
+import { AuthInterceptorProvider } from './../interceptors/auth-interceptor';
 
 //import { JwtModule } from '@auth0/angular-jwt';
 
@@ -55,9 +56,10 @@ import { ClienteService } from './../services/domain/cliente.service';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CategoriaService,
+    AuthInterceptorProvider, // Necessário declarar antes do ErrorInterceptorProvider para interceptar a authorization e Bearer
     ErrorInterceptorProvider,
     AuthService,
-    StorageService  ,
+    StorageService,
     ClienteService  
   ]
 })
