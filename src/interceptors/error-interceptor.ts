@@ -1,13 +1,17 @@
-import { StorageService } from './../services/storage.service';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
 import { Observable } from "rxjs";
+import { AlertController } from 'ionic-angular';
+
+import { StorageService } from './../services/storage.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-    constructor(public storage: StorageService) {}
+    constructor(
+        public storage: StorageService,
+        public alertCtrl: AlertController) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         //console.log("Passou no interceptor")
@@ -25,9 +29,16 @@ export class ErrorInterceptor implements HttpInterceptor {
             console.log(errorObj)
 
             switch(errorObj.status) {
+                case 401:
+                this.handle401()
+                break
+
                 case 403: 
                 this.handle403() 
                 break
+
+                default:
+                this.handleDefaultError(errorObj)
             }
 
             return Observable.throw(errorObj)
@@ -36,6 +47,31 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     handle403() {
         this.storage.setLocalUser(null)
+    }
+
+    handle401() {
+        //console.log('teste')
+        let alert = this.alertCtrl.create({
+            title: 'Erro 401: falha de autenticação',
+            message: 'Email ou senha incorretos',
+            enableBackdropDismiss: false,
+            buttons: [ 
+                { text: 'OK' }
+            ]
+        })
+        alert.present()
+    }
+
+    handleDefaultError(errorObj) {
+        let alert = this.alertCtrl.create({
+            title: 'Erro ' + errorObj.status + ': ' + errorObj.error,
+            message: errorObj.message,
+            enableBackdropDismiss: false,
+            buttons: [ 
+                { text: 'OK' }
+            ]
+        })
+        alert.present()
     }
 
 }
