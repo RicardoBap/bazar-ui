@@ -53,4 +53,9 @@ export class HomePage {
     error => {}       
   }
 
+  signup() {
+    console.log('passou - sihnup')
+    this.navCtrl.push('SignupPage')
+  }
+
 }
