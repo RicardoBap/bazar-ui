@@ -13,7 +13,8 @@ import { ProdutoService } from '../../services/domain/produto.service';
 })
 export class ProdutosPage {
 
-  itens: ProdutoDTO[]
+  itens: ProdutoDTO[] = []
+  page: number = 0
 
   constructor(
     public navCtrl: NavController,
@@ -29,22 +30,26 @@ export class ProdutosPage {
   loadData() {
     let categoria_id = this.navParams.get('cat')
     let loader = this.presentLoading() //<--- ABRE O LOADING
-    this.produtoService.findByCategoria(categoria_id)
+    this.produtoService.findByCategoria(categoria_id, this.page, 10)
       .subscribe(response => {
-        this.itens = response['content']
+        let start = this.itens.length
+        this.itens = this.itens.concat(response['content']) // <-- page   
+        let end = this.itens.length - 1    
         loader.dismiss() //<-- FECHA JANELA DO LOADING
-        this.loadImageUrl()
+        console.log(this.page)
+        console.log(this.itens)
+        this.loadImageUrl(start, end)
       }, error => {
         loader.dismiss() // <--- FECHA A JENAL DE LOADING
       } )   
   }
 
   
-  loadImageUrl() {
-    for(var i = 0; i < this.itens.length; i++) {
+  loadImageUrl(start: number, end: number) {
+    for(var i = start; i < end; i++) {
       let item = this.itens[i]
       this.produtoService.getSmallImageFromBucket(item.id)
-        .subscribe(response => {
+         .subscribe(response => {
           item.imageUrl = `${API_CONFIG.bucketBaseUrl}/prod${item.id}-small.jpg`
         }, error => {} )
     }
@@ -63,9 +68,19 @@ export class ProdutosPage {
   }
 
   doRefresh(refresher) {
+    this.page = 0
+    this.itens = []
     this.loadData()
     setTimeout(() => {
       refresher.complete()
+    }, 1000)
+  }
+
+  doInfinite(infiniteScroll) {
+    this.page++
+    this.loadData()
+    setTimeout(() => {
+      infiniteScroll.complete()
     }, 1000)
   }
 
