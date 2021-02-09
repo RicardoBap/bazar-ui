@@ -9,7 +9,7 @@ export class PedidoService {
     constructor(public http: HttpClient) {}
 
     insert(obj: PedidoDTO) {
-        return this.http.post(`${API_CONFIG.baseUrl}/pedidos`, obj, { observe: 'response', responseType: 'text' })
+         return this.http.post(`${API_CONFIG.baseUrl}/pedidos`, obj, { observe: 'response', responseType: 'text' })
     }    
 
 }
